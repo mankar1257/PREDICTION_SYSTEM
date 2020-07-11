@@ -1,8 +1,10 @@
 # CROWN_AI
-  
+
+## Demand Prediction System
+
 ## Install guide
 
-#####  required Python version Python 3.5 
+##### Python version :  Python 3.5
 
 ##### Clone the repo
 
@@ -65,5 +67,15 @@ print(x)
 ```
  
 Feel  free to change the values of H ( Hospital ) and I (item )
+
+
+
+## Algorithms: 
+<br> Auto-ARIMA, Exponential smoothing, Holt_linear Method, Holt_Winter Method, <br>
+<emsp>Regression ( linear, polynomial, Lasso, Ridge, Huber, Elasticnet and  SGD )  <br>
+
+Each of these models can outperform the others on a particular dataset, so the prediction system <br>
+selects the best algorithm out of all 15 machine learning algorithms for the data.<br>
+The given data is fed to all models and the model giving the least error on the test data is selected.
 
  
