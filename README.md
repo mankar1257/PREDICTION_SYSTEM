@@ -2,6 +2,8 @@
   
 ## Install guide
 
+#####  required Python version Python 3.5 
+
 ##### Clone the repo
 
 ```bash
