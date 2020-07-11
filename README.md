@@ -21,7 +21,7 @@ $ pip install -r requirements.txt
 
 ##### Run the app
 ```bash
-$ cd AI_API
+$ cd API
 $ python3 app.py
 ```
 
@@ -46,20 +46,20 @@ $ DB="mongodb+srv://CROWN_AI:1234@cluster0-eowpu.mongodb.net/<dbname>?retryWrite
 
 Using Postman
 
-URL : http://127.0.0.1:5000/find?lat=36.336159&lng=-119.645667&radius=50
+URL : http://127.0.0.1:5000/find?H=1&I=1
  
 Using Python request 
 
 ```
 import requests
 
-x = requests.get('http://127.0.0.1:5000/find?lat=36.336159&lng=-119.645667&radius=50')
+x = requests.get('http://127.0.0.1:5000/find?H=1&I=1')
 
 x = x.json()
 
 print(x)
 ```
  
-Feel  free to change the values of radius, lat, and lng ( within US ) 
+Feel  free to change the values of H ( Hospital ) and I (item )
 
  
