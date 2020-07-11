@@ -10,6 +10,7 @@ Created on Sat Jul 11 15:44:30 2020
 from flask import Flask
 from flask_restful import reqparse, abort, Api, Resource
 from pymongo import MongoClient
+import os
 
 
 app = Flask(__name__)
@@ -33,7 +34,8 @@ class Demand(Resource):
         try :
             # set connection to the cloud database
              
-            conn = MongoClient('mongodb+srv://CROWN_AI:1234@cluster0-eowpu.mongodb.net/<dbname>?retryWrites=true&w=majority')
+            MONGO_URL = os.getenv("DB")
+            conn = MongoClient(MONGO_URL)
             # set path
             db = conn['Hospital_data']
             
