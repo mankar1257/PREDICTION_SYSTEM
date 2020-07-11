@@ -17,7 +17,7 @@ from Data import purchase_data
 from sklearn.model_selection import train_test_split 
 from dateutil.relativedelta import relativedelta
 
-len_to_forcast = 5 # months 
+len_to_forecast = 2 # months 
 
 
 """
@@ -34,14 +34,6 @@ len_to_forcast = 5 # months
                                               (non-seasonal) data.
                           }
     
-Types of Seasonality
-There are many types of seasonality; for example:
-Time of Day.
-Daily.
-Weekly.
-Monthly.
-Yearly.
-etc 
 
 2) Process the data
     
@@ -49,7 +41,7 @@ etc
     
 4) save the predictions to the database
     key-value pair for non-relational database 
-    "HosName_ItemName" : {"predicton" : list_data }
+    "HosName_ItemName" : {"Forecast" : is_forecast ,  'time' : time_f , "val"  : list(df['val'])  + list(forecast)  , "Confidance_Interval" : ct } 
 """
 
 #-----------------------Read_data_from_the_database--------------
@@ -59,8 +51,6 @@ PD = purchase_data()
 dd = PD.Get_data()
 
 #print(dd)
-
-
 
 def Get_Data(key): 
     
@@ -75,6 +65,9 @@ def Get_Data(key):
     
     return data , fqp , m 
 
+# Using the mock data ---------------------------------------------------------------
+    
+# H = Hospital Name , I = item Name 
 
 H = 1
 I = 1
@@ -89,21 +82,9 @@ data['time'] = data['time'].dt.date
 seq = list(data['val'])
 time= list(data['time'])
 
-print(list(data['val'])[0])
+#print(list(data['val'])[0])
 
 
-#-----------------------Using Mock Data -----------------------
-
-"""data = pd.read_csv('datasets_56102_107707_monthly-beer-production-in-austr.csv')
-data.columns = ['time' , 'val' ]
-data.head()
-data['time'] = pd.to_datetime(data['time'])
-data['time'] = data['time'].dt.date
-data.head()
-seq = data['val']
-time= list(data['time'])
-fqp = 1 #freq_of_purchase
-m = 12 # monthly"""
 # --------------------------- Data-Preprocessing ----------------------
 
 
@@ -125,7 +106,7 @@ def add_months(sourcedate, months):
 
 
 
-def generate_data_for_regression(seq , time , len_to_forcast = 2   , split = 0.9):
+def generate_data_for_regression(seq , time , len_to_forecast = 2   , split = 0.9):
       df= pd.DataFrame({"seq" : seq , "time" : time })
       X =df['time']
       y = np.asarray( df['seq'])
@@ -133,7 +114,7 @@ def generate_data_for_regression(seq , time , len_to_forcast = 2   , split = 0.9
       X = X.map(dt.datetime.toordinal)
       
       X_future = []
-      for i in range(len_to_forcast):
+      for i in range(len_to_forecast):
           X_future1 =  list(df['time'])[len(df['time'])-1] +  timedelta(days = 30 + 30*i )
           X_future.append(X_future1.toordinal())
           
@@ -149,13 +130,13 @@ def generate_data_for_regression(seq , time , len_to_forcast = 2   , split = 0.9
 
 df , train , test = process_seq(seq , split = 0.9 )
 
-X , Y , X_train, X_test, y_train, y_test,X_future = generate_data_for_regression(seq , time , len_to_forcast = len_to_forcast   , split = 0.9) 
+X , Y , X_train, X_test, y_train, y_test,X_future = generate_data_for_regression(seq , time , len_to_forecast = len_to_forecast   , split = 0.9) 
 
  
 time_f = time 
 #print(time_f)
 
-for i in range(len_to_forcast):
+for i in range(len_to_forecast):
     sourcedate = time_f[-1]
     md = add_months(sourcedate,1 )
     time_f.append(md)
@@ -254,49 +235,41 @@ def get_best_re_model( X, Y , X_train, X_test, y_train, y_test,X_future):
           return min(Error) , Future_P[Error.index(min(Error))]
 
 if fqp != 0 :
-    ff  , ct , name = get_pred_ts(df , train , test , m ,len_to_forcast , use_AA_only = True) 
-    is_forcast = ['False']*len(df) + ['True']* len_to_forcast
+    forecast  , ct , name = get_pred_ts(df , train , test , m ,len_to_forecast , use_AA_only = True) 
+    is_forecast = ['False']len(df) + ['True'] len_to_forecast
     time_f = [str(obj) for obj in time_f]
     ct = [list(obj) for obj in ct] 
-    #print('pppppppppppppppppppppppppppppppppppppppppppp')
-    #print(ct)
-    #print(len(list(df['val']) + list(ff)))
-    #print(len(is_forcast))
+ 
     ct = [[np.nan ,  np.nan ]]*len(df) +  list(ct)
     
-    #print('done')
-    df_f = {"Forcast" : is_forcast ,  'time' : time_f , "val"  : list(df['val'])  + list(ff)  , "Confidance_Interval" : ct } 
-    #print('done')
-    #print(pd.DataFrame(df_f).tail())
+    df_f = {"Forecast" : is_forecast ,  'time' : time_f , "val"  : list(df['val'])  + list(forecast)  , "Confidance_Interval" : ct } 
+ 
     r = PD.insert_data(Id,df_f)
-    #print('done')
-    #print(r)
+ 
     
     print(pd.DataFrame(df_f).tail())
     
 else :
-    err, forcast = get_best_re_model( X, Y , X_train, X_test, y_train, y_test,X_future)
-    is_forcast = ['False']*len(df) + ['True']* len_to_forcast
+    
+    err, forecast = get_best_re_model( X, Y , X_train, X_test, y_train, y_test,X_future)
+    is_forecast = ['False']len(df) + ['True'] len_to_forecast
     ct = [[ np.nan ,  np.nan]]*len(time_f)
     time_f = [str(obj) for obj in time_f]
     ct = [list(obj) for obj in ct] 
-    
-    #print('pppppppppppppppppppppppppppppppppppppppppppp')
-    
-    #print(len(ct))
-    #print(len(is_forcast))
-    #print(len(  list(forcast)))
+ 
  
     
-    df_f = {"Forcast" : is_forcast ,  'time' : time_f , "val"  : list(df['val'])  + list(forcast)  , "Confidance_Interval" : ct } 
+    df_f = {"Forecast" : is_forecast ,  'time' : time_f , "val"  : list(df['val'])  + list(forecast)  , "Confidance_Interval" : ct } 
     
     r = PD.insert_data(Id,df_f)
     #print(r)
     
-    #print(pd.DataFrame(df_f).tail())
-    
+ 
     
 
 
-
-    
+"""
+Note :  The tuning of the models like Auto-Arima can be done when we get exact data.
+        To make the system more automated the required tuning parameters like seasonality 
+        can be stored with the data in the data set after doing some data analysis.
+"""
