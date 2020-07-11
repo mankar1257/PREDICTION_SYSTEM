@@ -19,16 +19,10 @@ $ mkvirtualenv CROWN_AI
 $ pip install -r requirements.txt
 ```
 
-##### Run the app
-```bash
-$ cd API
-$ python3 app.py
-```
-
 
 ## Setting environment variables
 
-### FOR UBUNTU 
+#### FOR UBUNTU 
 
 Open environment file 
 
@@ -41,6 +35,14 @@ Add this into environment file
 $ DB="mongodb+srv://CROWN_AI:1234@cluster0-eowpu.mongodb.net/<dbname>?retryWrites=true&w=majority"
 
 ```
+
+
+## Run the app
+```bash
+$ cd API
+$ python3 app.py
+```
+
 
 ## Test
 
