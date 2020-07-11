@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np  
 from statistics import mean
 from pymongo import MongoClient
-
+import os
 
 
 class purchase_data:
@@ -81,7 +81,8 @@ class purchase_data:
         try :
             # set connection to the cloud database
              
-            conn = MongoClient('mongodb+srv://CROWN_AI:1234@cluster0-eowpu.mongodb.net/<dbname>?retryWrites=true&w=majority')
+            MONGO_URL = os.getenv("DB")
+            conn = MongoClient(MONGO_URL)
             # set path
             db = conn['Hospital_data']
 
@@ -103,7 +104,8 @@ class purchase_data:
         try :
             # set connection to the cloud database
              
-            conn = MongoClient('mongodb+srv://CROWN_AI:1234@cluster0-eowpu.mongodb.net/<dbname>?retryWrites=true&w=majority')
+            MONGO_URL = os.getenv("DB")
+            conn = MongoClient(MONGO_URL)
             # set path
             db = conn['Hospital_data']
              
@@ -120,7 +122,9 @@ class purchase_data:
         try :
             # set connection to the cloud database
              
-            conn = MongoClient('mongodb+srv://CROWN_AI:1234@cluster0-eowpu.mongodb.net/<dbname>?retryWrites=true&w=majority')
+            MONGO_URL = os.getenv("DB")
+            conn = MongoClient(MONGO_URL)
+            
             # set path
             db = conn['Hospital_data']
             
