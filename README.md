@@ -1,6 +1,4 @@
-# CROWN_AI
-
-## Demand Prediction System
+# Demand Prediction System
 
 ## Install guide
 
